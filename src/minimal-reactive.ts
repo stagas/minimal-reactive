@@ -66,6 +66,8 @@ export function effect<T extends BoxedDeps<any>>(deps: T, fn: Fx<T>): Dispose {
           !Object.is(prev[key], value)
       )
     ) {
+      dispose?.()
+      dispose = null
       if (
         entries.some(
           ([, value]) =>
@@ -73,8 +75,6 @@ export function effect<T extends BoxedDeps<any>>(deps: T, fn: Fx<T>): Dispose {
         )
       ) {
         strategy = A
-        dispose?.()
-        dispose = null
       } else {
         dispose = fn(prev = next as Deps<T>)
       }

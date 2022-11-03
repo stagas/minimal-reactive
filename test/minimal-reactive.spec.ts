@@ -143,6 +143,34 @@ describe('multiple dep(x)', () => {
     expect(fired).toEqual(2)
   })
 
+  it('fires dispose when dependency changes', () => {
+    const a = dep(0)
+    const b = dep([])
+
+    let fired = 0
+    let disposed = 0
+    let ra
+    let rb
+    effect({ a, b }, ({ a, b }) => {
+      ra = a
+      rb = b
+      fired++
+      return () => {
+        disposed++
+      }
+    })
+
+    expect(ra).toEqual(0)
+    expect(rb).toEqual([])
+    expect(fired).toEqual(1)
+    expect(disposed).toEqual(0)
+
+    a.value = 2
+    expect(ra).toEqual(2)
+    expect(fired).toEqual(2)
+    expect(disposed).toEqual(1)
+  })
+
   it('runs dispose', () => {
     const a = dep(0)
     const b = dep<any[]>([])
