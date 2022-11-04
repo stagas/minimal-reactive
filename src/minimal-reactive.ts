@@ -1,28 +1,28 @@
 export interface Dep<T> {
-  subscribers: Set<any>
+  subs: Set<any>
   value: T | null | undefined
 }
-export type BoxedDeps<T> = {
+export type Boxs<T> = {
   [K in keyof T]: Dep<T[K]>
 }
 
-export type Deps<T extends BoxedDeps<T>> = {
+export type Deps<T extends Boxs<T>> = {
   [K in keyof T]-?: NonNullable<T[K]['value']>
 }
 
-export type Values<T extends BoxedDeps<T>> = {
+export type Vals<T extends Boxs<T>> = {
   [K in keyof T]: T[K]['value']
 }
 
-export type Dispose = () => any
+export type Off = () => any
 
-export type DepCallback = <T>(prevValue: T | null | undefined, nextValue: T | null | undefined) => void
+export type Sub = <T>(prevValue: T | null | undefined, nextValue: T | null | undefined) => void
 
-export type Fx<T extends BoxedDeps<T>> = (deps: Deps<T>) => Dispose | void
+export type Fx<T extends Boxs<T>> = (deps: Deps<T>) => Off | void
 
 export function dep<T>(value?: T | null | undefined): Dep<T> {
   return {
-    subscribers: new Set<DepCallback>(),
+    subs: new Set<Sub>(),
     get value() {
       return value
     },
@@ -30,34 +30,33 @@ export function dep<T>(value?: T | null | undefined): Dep<T> {
       if (!Object.is(newValue, value)) {
         const oldValue = value
         value = newValue
-        this.subscribers.forEach((fn) => fn(oldValue, newValue))
+        this.subs.forEach((fn) => fn(oldValue, newValue))
       }
     }
   }
 }
 
-
-export function effect<T extends BoxedDeps<any>>(deps: T, fn: Fx<T>): Dispose {
+export function effect<T extends Boxs<any>>(deps: T, fn: Fx<T>): Off {
   let prev: Deps<T>
 
-  const values = (): Values<T> =>
+  const values = (): Vals<T> =>
     Object.fromEntries(
       Object.entries(deps).map(
         ([key, dep]) =>
           [key, dep.value] as [keyof T, T[keyof T]['value']]
       )
-    ) as Values<T>
+    ) as Vals<T>
 
-  let dispose: Dispose | null | void
+  let dispose: Off | null | void
 
-  const A = (next: Values<T>) => {
+  const A = (next: Vals<T>) => {
     if (Object.values(next).every((value) => value != null)) {
       strategy = B
       dispose = fn(prev = next as Deps<T>)
     }
   }
 
-  const B = (next: Values<T>) => {
+  const B = (next: Vals<T>) => {
     const entries = Object.entries(next)
 
     if (
@@ -86,14 +85,14 @@ export function effect<T extends BoxedDeps<any>>(deps: T, fn: Fx<T>): Dispose {
   const callback = () => strategy(values())
 
   Object.values(deps).forEach((dep) => {
-    dep.subscribers.add(callback)
+    dep.subs.add(callback)
   })
 
   callback()
 
   return () => {
     Object.values(deps).forEach((dep) => {
-      dep.subscribers.delete(callback)
+      dep.subs.delete(callback)
     })
     dispose?.()
   }
