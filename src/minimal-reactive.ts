@@ -31,7 +31,7 @@ export type OffFx = (reconnect?: boolean, disconnect?: boolean) => any
 
 export type Sub = <T>(prevValue: T | null | undefined, nextValue: T | null | undefined) => void
 
-export type Fx<T extends Boxs<T>> = (deps: Unboxs<T>, changes: Change[]) => OffFx | void
+export type Fx<T extends Boxs<T>> = (deps: Unboxs<T>, changes: Change[], prev: Unboxs<T>) => OffFx | void
 
 const equals = (value: any, next: any) =>
   value != null && next != null && typeof value === 'object' && 'equals' in value
@@ -139,7 +139,7 @@ export const effect = Object.assign(function effect<T extends Boxs<any>>(deps: T
       values[key] = deps[key].value
     }
 
-    dispose = once(fn(values, changes))
+    dispose = once(fn(values, changes, {} as any))
   }
 
   const B = function strategyFill() {
@@ -149,6 +149,8 @@ export const effect = Object.assign(function effect<T extends Boxs<any>>(deps: T
 
     const changes: Change[] = []
     let hasVoid = false
+
+    const prev = { ...values }
 
     for (const key in deps) {
       if (!equals(values[key], deps[key].value)) {
@@ -183,7 +185,7 @@ export const effect = Object.assign(function effect<T extends Boxs<any>>(deps: T
       } else {
         // reconnect && !disconnect === is updating
         dispose?.(true)
-        dispose = once(fn(values, changes))
+        dispose = once(fn(values, changes, prev))
       }
     }
   }
