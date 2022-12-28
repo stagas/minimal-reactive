@@ -116,7 +116,7 @@ export const effect = Object.assign(function effect<T extends Boxs<any>>(deps: T
   // stackErr = new Error()
   // }
 
-  let values: Unboxs<T>
+  const values: Unboxs<T> = Object.create(null)
   let dispose: OffFx | void
 
   const A = function strategyNull() {
@@ -130,7 +130,6 @@ export const effect = Object.assign(function effect<T extends Boxs<any>>(deps: T
     strategy = B
 
     const changes: Change[] = []
-    values = Object.create(null)
     for (const key in deps) {
       if (values[key] == null) {
         changes.push({ key, prev: values[key], next: deps[key].value })
