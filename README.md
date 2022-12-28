@@ -1,7 +1,7 @@
 
 
 <h1>
-minimal-reactive <a href="https://npmjs.org/package/minimal-reactive"><img src="https://img.shields.io/badge/npm-v1.3.0-F00.svg?colorA=000"/></a> <a href="src"><img src="https://img.shields.io/badge/loc-155-FFF.svg?colorA=000"/></a> <a href="https://cdn.jsdelivr.net/npm/minimal-reactive@1.3.0/dist/minimal-reactive.min.js"><img src="https://img.shields.io/badge/brotli-1K-333.svg?colorA=000"/></a> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-F0B.svg?colorA=000"/></a>
+minimal-reactive <a href="https://npmjs.org/package/minimal-reactive"><img src="https://img.shields.io/badge/npm-v1.4.0-F00.svg?colorA=000"/></a> <a href="src"><img src="https://img.shields.io/badge/loc-154-FFF.svg?colorA=000"/></a> <a href="https://cdn.jsdelivr.net/npm/minimal-reactive@1.4.0/dist/minimal-reactive.min.js"><img src="https://img.shields.io/badge/brotli-1K-333.svg?colorA=000"/></a> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-F0B.svg?colorA=000"/></a>
 </h1>
 
 <p></p>
