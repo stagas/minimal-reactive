@@ -207,7 +207,7 @@ export const effect = Object.assign(function effect<T extends Boxs<any>>(deps: T
     dispose?.(reconnect, disconnect)
   }
 }, {
-  maxUpdates: 2000,
+  maxUpdates: 10000,
   maxUpdatesWithinMs: 10,
   debug: false as (
     false
